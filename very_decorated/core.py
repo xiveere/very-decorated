@@ -58,7 +58,7 @@ def _get_args_and_vars(func: Callable, args: tuple, kwargs: dict, include_args: 
     return msg_parts
 
 
-def log(display_name: str = None, include_args: list[str] = None, include_vars: list[str] = None, mode: str = "partial"):
+def log(display_name: str = None, include_args: list[str] = None, include_vars: list[str] = None, mode: str = "partial", output_name: str = None):
     """Decorator to log function entry, exit, and any exceptions.
     
     Args:
@@ -66,6 +66,7 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
         include_args: List of argument names to include in the start log (e.g., ['id', 'name'])
         include_vars: List of variable paths to include from instance (e.g., ['self.request.style', 'self.project_id'])
         mode: Logging mode - "full" logs start and end, "partial" only logs end or error (default: "partial")
+        output_name: Optional name for logging function output. If provided, logs return value as "<output_name>: <output>"
     """
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
@@ -78,15 +79,27 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
             
             # Only build and log start message if mode is "full"
             if mode == "full":
-                # Log function entry without args
-                logger.opt(depth=1).info(f"Starting {func_name}")
+                start_msg = f"Starting {func_name}"
+                msg_parts = _get_args_and_vars(func, args, kwargs, include_args, include_vars)
+                if msg_parts:
+                    start_msg += f". {', '.join(msg_parts)}"
+                logger.opt(depth=1).info(start_msg)
             
             try:
                 result = await func(*args, **kwargs)
                 
-                # Build success message with args and vars
+                # Build success message
                 success_msg = f"Finished {func_name}"
-                msg_parts = _get_args_and_vars(func, args, kwargs, include_args, include_vars)
+                msg_parts = []
+                
+                # In full mode, only show output_name; in partial mode, show args/vars too
+                if mode == "partial":
+                    msg_parts = _get_args_and_vars(func, args, kwargs, include_args, include_vars)
+                
+                # Add output if output_name is provided
+                if output_name is not None:
+                    msg_parts.append(f"{output_name}: {result}")
+                
                 if msg_parts:
                     success_msg += f". {', '.join(msg_parts)}"
                 
@@ -113,15 +126,27 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
             
             # Only build and log start message if mode is "full"
             if mode == "full":
-                # Log function entry without args
-                logger.opt(depth=1).info(f"Starting {func_name}")
+                start_msg = f"Starting {func_name}"
+                msg_parts = _get_args_and_vars(func, args, kwargs, include_args, include_vars)
+                if msg_parts:
+                    start_msg += f". {', '.join(msg_parts)}"
+                logger.opt(depth=1).info(start_msg)
             
             try:
                 result = func(*args, **kwargs)
                 
-                # Build success message with args and vars
+                # Build success message
                 success_msg = f"Finished {func_name}"
-                msg_parts = _get_args_and_vars(func, args, kwargs, include_args, include_vars)
+                msg_parts = []
+                
+                # In full mode, only show output_name; in partial mode, show args/vars too
+                if mode == "partial":
+                    msg_parts = _get_args_and_vars(func, args, kwargs, include_args, include_vars)
+                
+                # Add output if output_name is provided
+                if output_name is not None:
+                    msg_parts.append(f"{output_name}: {result}")
+                
                 if msg_parts:
                     success_msg += f". {', '.join(msg_parts)}"
                 
