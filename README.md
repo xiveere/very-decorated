@@ -1,4 +1,4 @@
-# vdeco
+# very-decorated
 
 Useful decorators for logging and timing functions with support for both sync and async functions.
 
@@ -7,7 +7,7 @@ Useful decorators for logging and timing functions with support for both sync an
 Install directly from GitHub:
 
 ```bash
-pip install git+https://github.com/yourusername/vdeco.git
+pip install git+https://github.com/xiveere/very-decorated.git
 ```
 
 ## Features
@@ -22,7 +22,7 @@ pip install git+https://github.com/yourusername/vdeco.git
 ### Basic Logging
 
 ```python
-from vdeco import log
+from very-decorated import log
 
 @log()
 async def my_function():
@@ -33,7 +33,7 @@ async def my_function():
 ### Logging with Arguments
 
 ```python
-from vdeco import log
+from very-decorated import log
 
 @log(include_args=["user_id", "name"])
 def process_user(user_id: int, name: str):
@@ -44,7 +44,7 @@ def process_user(user_id: int, name: str):
 ### Logging with Instance Variables
 
 ```python
-from vdeco import log
+from very-decorated import log
 
 class MyService:
     @log(include_vars=["self.request.style", "self.project_id"])
@@ -56,7 +56,7 @@ class MyService:
 ### Full Logging Mode
 
 ```python
-from vdeco import log
+from very-decorated import log
 
 @log(mode="full")  # Logs both start and end
 def my_function():
@@ -68,7 +68,7 @@ By default, `mode="partial"` only logs the end or errors.
 ### Timer Decorator
 
 ```python
-from vdeco import timer
+from very-decorated import timer
 
 @timer()
 async def slow_function():
