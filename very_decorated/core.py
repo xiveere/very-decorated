@@ -83,7 +83,7 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
                 msg_parts = _get_args_and_vars(func, args, kwargs, include_args, include_vars)
                 if msg_parts:
                     start_msg += f". {', '.join(msg_parts)}"
-                logger.opt(depth=1).info(start_msg)
+                logger.opt(depth=2).info(start_msg)
             
             try:
                 result = await func(*args, **kwargs)
@@ -103,7 +103,7 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
                 if msg_parts:
                     success_msg += f". {', '.join(msg_parts)}"
                 
-                logger.opt(depth=1).info(success_msg)
+                logger.opt(depth=2).info(success_msg)
                 return result
                 
             except Exception as e:
@@ -113,7 +113,7 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
                 if msg_parts:
                     error_msg += f". {', '.join(msg_parts)}"
                 
-                logger.opt(depth=1).error(error_msg)
+                logger.opt(depth=2).error(error_msg)
                 raise
         
         @functools.wraps(func)
@@ -130,7 +130,7 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
                 msg_parts = _get_args_and_vars(func, args, kwargs, include_args, include_vars)
                 if msg_parts:
                     start_msg += f". {', '.join(msg_parts)}"
-                logger.opt(depth=1).info(start_msg)
+                logger.opt(depth=2).info(start_msg)
             
             try:
                 result = func(*args, **kwargs)
@@ -150,7 +150,7 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
                 if msg_parts:
                     success_msg += f". {', '.join(msg_parts)}"
                 
-                logger.opt(depth=1).info(success_msg)
+                logger.opt(depth=2).info(success_msg)
                 return result
                 
             except Exception as e:
@@ -160,7 +160,7 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
                 if msg_parts:
                     error_msg += f". {', '.join(msg_parts)}"
                 
-                logger.opt(depth=1).error(error_msg)
+                logger.opt(depth=2).error(error_msg)
                 raise
         
         if asyncio.iscoroutinefunction(func):
@@ -184,7 +184,7 @@ def timer(display_name: str = None):
             start_time = time.perf_counter()
             result = await func(*args, **kwargs)
             execution_time = time.perf_counter() - start_time
-            logger.opt(depth=1).info(f"Finished {func_name} in {execution_time:.6f} seconds")
+            logger.opt(depth=2).info(f"Finished {func_name} in {execution_time:.6f} seconds")
             return result
         
         @functools.wraps(func)
@@ -194,7 +194,7 @@ def timer(display_name: str = None):
             start_time = time.perf_counter()
             result = func(*args, **kwargs)
             execution_time = time.perf_counter() - start_time
-            logger.opt(depth=1).info(f"Finished {func_name} in {execution_time:.6f} seconds")
+            logger.opt(depth=2).info(f"Finished {func_name} in {execution_time:.6f} seconds")
             return result
         
 
