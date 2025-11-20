@@ -1,9 +1,12 @@
 import functools
 import time
-from typing import Callable, Any
+from typing import Callable, Any, ParamSpec, TypeVar, overload
 from loguru import logger
 import asyncio
 import inspect
+
+P = ParamSpec('P')
+T = TypeVar('T')
 
 def _create_patcher():
     """Create a patcher that finds the actual caller location.
@@ -111,9 +114,9 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
         output_name: Optional name for logging function output. If provided, logs return value as "<output_name>: <output>"
         timer: If True, also log execution time (default: False)
     """
-    def decorator(func: Callable) -> Callable:
+    def decorator(func: Callable[P, T]) -> Callable[P, T]:
         @functools.wraps(func)
-        async def async_wrapper(*args, **kwargs) -> Any:
+        async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             func_name = display_name or func.__name__
             
             # Validate mode parameter
@@ -172,7 +175,7 @@ def log(display_name: str = None, include_args: list[str] = None, include_vars: 
                 raise
         
         @functools.wraps(func)
-        def sync_wrapper(*args, **kwargs) -> Any:
+        def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             func_name = display_name or func.__name__
             
             # Validate mode parameter
